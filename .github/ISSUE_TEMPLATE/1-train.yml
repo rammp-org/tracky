@@ -1,0 +1,71 @@
+# Declare a feature: the umbrella issue of a PR train. See docs/design.md, "The record".
+#
+# The field ids below are an interface. Tracky's body parser (tracky/feature.py) and the
+# declare page's prefill URL (site/declare.html) both depend on them, so change them only
+# together with those two.
+#
+#   name      input     the branch slug, e.g. estop; used in branches feat/{issue}-{name}
+#   repos     textarea  one line per repo, "<repo>: <what it needs>", in merge order; a blank
+#                       line separates steps
+#   repoint   dropdown  "auto" or "on request"
+#
+# The issue title is the headline ("train: E-stop button"); `name` is its short, branch-safe
+# form. They are separate fields because a title can be anything and a slug cannot.
+#
+# Decision, repos and notes as lines in one textarea rather than a checkbox and a textarea per
+# repo: any rammp-org repo can be named without editing this template, the line order is the
+# merge order (with blank lines between steps that may merge in parallel; without them Tracky
+# groups the steps from the evidence it sees), and the declare page fills the whole field with
+# one query parameter (GitHub prefills input, textarea and dropdown fields by id). The cost is
+# that the parser splits lines on the first ":" and must match the repo name itself.
+#
+# Ids avoid GitHub's own query parameters: title, body, labels, milestone, assignees,
+# projects, template.
+#
+# Rendered body (what the parser sees): "### <label>" then the value, "_No response_" for an
+# empty optional field.
+
+name: Declare a feature (train)
+description: Start a PR train across the member repos. Tracky scaffolds issues, branches and draft PRs from this.
+title: "train: "
+labels: ["train"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        All aboard the PR train! 🚂💨 The title above is the headline, e.g. `train: E-stop button`.
+        Tracky keeps a table of the train current in this issue's body; everything you write stays yours.
+
+  - type: input
+    id: name
+    attributes:
+      label: Branch name
+      description: "Short form of the title for branches, `feat/{issue}-{branch name}`: lowercase letters, digits and dashes."
+      placeholder: estop
+    validations:
+      required: true
+
+  - type: textarea
+    id: repos
+    attributes:
+      label: Repos
+      description: "One line per repo, `repo: what it needs there`, in merge order. A blank line separates steps that can merge in parallel; leave them out and Tracky suggests the steps."
+      placeholder: |
+        rammp-rtps: add the e-stop message
+
+        RAMMP-mib-fw: assert the output when received
+        pace-hmi-fw: button on the main screen
+    validations:
+      required: true
+
+  - type: dropdown
+    id: repoint
+    attributes:
+      label: Repoint
+      description: "After an upstream PR merges: repoint downstream branches on its own, or wait for `/tracky repoint`."
+      options:
+        - auto
+        - on request
+      default: 0
+    validations:
+      required: true

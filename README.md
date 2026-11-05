@@ -113,8 +113,8 @@ On a feature issue or any PR in its train:
 tracky/           the bot: Python, stdlib + the GitHub API
 .github/
   ISSUE_TEMPLATE/
-    train.yml                  the declare form; labels the issue `train`
-    tracky.yml                 bug, idea or task for Tracky itself; labels it `tracky`
+    1-train.yml                the declare form; labels the issue `train`
+    2-bug.yml, 3-feature.yml, 4-task.yml   for Tracky itself; label it `tracky`
     config.yml                 blank issues off
   workflows/                   scaffold, track, repoint, pages
 site/             the GitHub Pages dashboard and declare form

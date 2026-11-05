@@ -1,0 +1,21 @@
+# Tracky's own bugs. Labels the issue `tracky`; Tracky's workflows act only on `train`, so this
+# never starts a PR train. See docs/design.md, "The record".
+
+name: Tracky bug
+description: Tracky did the wrong thing, or nothing.
+labels: ["tracky", "bug"]
+body:
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: What Tracky did. Link the feature issue, PR or workflow run where you saw it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true

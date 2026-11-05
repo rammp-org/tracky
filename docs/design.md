@@ -25,13 +25,17 @@ This is what it is made of and why. The README says what it does for a user.
 ## The record: one issue per feature
 
 The feature issue in the Tracky repo is the source of truth. It is opened through an issue form
-(`.github/ISSUE_TEMPLATE/train.yml`) with fields: name, repos (checkboxes), note per repo,
-repoint (auto / on request), order (optional, overrides the suggestion). The form applies the
-label `train`; that label is what makes an issue a feature to Tracky.
+(`.github/ISSUE_TEMPLATE/1-train.yml`) with fields: name (the branch slug; the title is the
+headline), repos (one line per repo, `repo: what it needs`, in merge order, a blank line
+between steps), repoint (auto / on request). The form applies the label `train`; that label is what makes an issue a feature to
+Tracky. Repos are free text, not a fixed list, so any rammp-org repo can join a train without a
+template change; the declare page offers the org's repos and fills the field.
 
-Tracky's own development happens in the same repo, so its issues share the list. A second
-template, `tracky.yml`, labels those `tracky`, and `config.yml` turns blank issues off so every
-issue arrives through one of the two. Every workflow filters on `train`: `scaffold` runs on
+Tracky's own development happens in the same repo, so its issues share the list. Three more
+templates, `2-bug.yml`, `3-feature.yml` and `4-task.yml`, label those `tracky` (GitHub forms cannot
+branch on an answer, so the chooser is where the kind is picked; the number prefixes order the
+chooser, train first), and `config.yml` turns blank
+issues off so every issue arrives through a template. Every workflow filters on `train`: `scaffold` runs on
 `issues: [labeled]` only when the label is `train`; `track` lists issues by `label:train`;
 `commands` answers `/tracky` on anything else with "not a train" and does nothing. Removing the
 `train` label from an issue is how a declared feature is withdrawn without deleting its history.
@@ -64,10 +68,11 @@ Evidence, in the order checked:
    `external/rammp-rtps`.)
 2. **ROS 2 package dependency.** A `package.xml` in repo A lists a package that lives in member
    repo B. B goes before A. (The arm driver or anything ROS-facing after interfaces-ros2.)
-3. **Stated.** `Follows owner/repo#N` in a PR body, or `/tracky order …`, or the order field on
-   the feature issue. A stated order wins. If it contradicts rule 1 or 2 Tracky says so on the
+3. **Stated.** `Follows owner/repo#N` in a PR body, or `/tracky order …`, or blank lines between
+   steps in the feature issue's repos field. A stated order wins. If it contradicts rule 1 or 2 Tracky says so on the
    feature issue, once, and follows the stated order anyway.
-4. **Otherwise** the repos are the same step, listed in the order they were ticked.
+4. **Otherwise** the repos are the same step, listed in the order the feature issue lists them.
+   Without blank lines the repos field is a sequence only, and rules 1 and 2 cut it into steps.
 
 A step is a set of PRs that can merge in any order among themselves. The next step's repoint
 happens when every PR it depends on has merged, not when the whole previous step has.
@@ -135,8 +140,8 @@ tracky/                    Python 3.11+, stdlib + GitHub REST/GraphQL via a GitH
   repoint.py               the pointer commit and auto-merge
   commands.py              /tracky … on issues and PRs
 .github/ISSUE_TEMPLATE/
-  train.yml                the declare form; label train
-  tracky.yml               bug, idea or task for Tracky itself; label tracky
+  1-train.yml              the declare form; label train
+  2-bug.yml, 3-feature.yml, 4-task.yml   for Tracky itself; label tracky
   config.yml               blank_issues_enabled: false
 .github/workflows/
   scaffold.yml             on: issues [labeled] if label == train
@@ -158,7 +163,7 @@ next quarter hour. Optional; the schedule covers it without.
 
 GitHub Pages from the Tracky repo, at `rammp-org.github.io/tracky`. Static. The dashboard reads
 `data.json`. The declare form has no credentials: Submit builds a URL to
-`github.com/rammp-org/tracky/issues/new?template=feature.yml&…` with the form's answers as the
+`github.com/rammp-org/tracky/issues/new?template=1-train.yml&…` with the form's answers as the
 template's field values, and the person confirms on GitHub, logged in as themselves. That gives
 anyone in the org a declare button, keeps the feature issue as the audit trail, and puts no
 secret in a public page.
