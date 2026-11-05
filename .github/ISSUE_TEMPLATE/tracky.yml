@@ -1,0 +1,25 @@
+# A bug, idea or task for Tracky itself. Labels the issue `tracky`; Tracky's workflows act only
+# on `train`, so these never start a PR train. See docs/design.md, "The record".
+
+name: Tracky itself
+description: A bug, idea or task for Tracky, the bot. Not a feature to track.
+labels: ["tracky"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - bug
+        - idea
+        - task
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: For a bug, what happened and what you expected; link the feature issue or workflow run if there is one. For an idea or task, what and why.
+    validations:
+      required: true

@@ -1,0 +1,3 @@
+# Every issue arrives through train.yml or tracky.yml. Maintainers still see a "Blank issue"
+# option; please don't use it.
+blank_issues_enabled: false

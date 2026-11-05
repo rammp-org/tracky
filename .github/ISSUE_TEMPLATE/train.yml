@@ -1,0 +1,106 @@
+# Declare a feature: the umbrella issue of a PR train. See docs/design.md, "The record".
+#
+# The field ids below are an interface. Tracky's body parser (tracky/feature.py, #3) and the
+# declare page's prefill URL (site/declare.html, #17) both depend on them, so change them only
+# together with those two.
+#
+#   name                        input     the slug, e.g. estop; used in branches feat/{issue}-{name}
+#   repos                       checkboxes one per member repo; the option label is the repo name
+#   note_rammp_rtps             textarea  what rammp-rtps needs
+#   note_rammp_interfaces_ros2  textarea  what rammp-interfaces-ros2 needs
+#   note_rammp_mib_fw           textarea  what RAMMP-mib-fw needs
+#   note_pace_hmi_fw            textarea  what pace-hmi-fw needs
+#   repoint                     dropdown  "auto" or "on request"
+#   order                       input     optional; overrides the suggested order
+#
+# Decision, one note per repo: one textarea per repo rather than one textarea with a
+# "repo: note" line per row. Each note is then a single form field, so the parser reads it from
+# its own "### Note: <repo>" heading without splitting free text, and the declare page can
+# prefill each one with its own query parameter. The cost is that adding a member repo means
+# adding a checkbox option and a textarea here, which it would anyway for the checkbox.
+#
+# Prefill: GitHub documents the field id as "the canonical identifier for the field in URL
+# query parameter prefills" (?template=train.yml&name=estop&note_rammp_rtps=...). It does not
+# say per type what is honoured; input, textarea and dropdown (by option text) are known to
+# work, checkboxes are not confirmed. #17 checks the checkboxes field and, if GitHub ignores
+# the parameter, puts the repo list in a note so the person ticks the boxes by hand.
+#
+# Ids avoid GitHub's own query parameters: title, body, labels, milestone, assignees,
+# projects, template.
+#
+# Rendered body (what the parser sees): "### <label>" then the value; "- [x] rammp-rtps" for
+# ticked repos, "_No response_" for an empty optional field.
+
+name: Declare a feature (train)
+description: Start a PR train across the member repos. Tracky scaffolds issues, branches and draft PRs from this.
+title: "train: "
+labels: ["train"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        All aboard the PR train! 🚂💨 Fill this in once; Tracky keeps a table of the train current
+        in this issue's body. Everything you write here stays yours.
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: Short slug for the feature. Lowercase letters, digits and dashes; it becomes the branch `feat/{issue}-{name}` in every repo.
+      placeholder: estop
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: repos
+    attributes:
+      label: Repos
+      description: Tick every member repo this feature touches. The ticked order is the fallback merge order.
+      options:
+        - label: rammp-rtps
+        - label: rammp-interfaces-ros2
+        - label: RAMMP-mib-fw
+        - label: pace-hmi-fw
+
+  - type: textarea
+    id: note_rammp_rtps
+    attributes:
+      label: "Note: rammp-rtps"
+      description: What rammp-rtps needs for this feature. Becomes the body of its issue and draft PR. Leave empty if unticked.
+
+  - type: textarea
+    id: note_rammp_interfaces_ros2
+    attributes:
+      label: "Note: rammp-interfaces-ros2"
+      description: What rammp-interfaces-ros2 needs for this feature. Leave empty if unticked.
+
+  - type: textarea
+    id: note_rammp_mib_fw
+    attributes:
+      label: "Note: RAMMP-mib-fw"
+      description: What RAMMP-mib-fw needs for this feature. Leave empty if unticked.
+
+  - type: textarea
+    id: note_pace_hmi_fw
+    attributes:
+      label: "Note: pace-hmi-fw"
+      description: What pace-hmi-fw needs for this feature. Leave empty if unticked.
+
+  - type: dropdown
+    id: repoint
+    attributes:
+      label: Repoint
+      description: After an upstream PR merges, should Tracky repoint downstream branches on its own, or wait for `/tracky repoint`?
+      options:
+        - auto
+        - on request
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: order
+    attributes:
+      label: Order
+      description: Optional. Merge order, overriding Tracky's suggestion. Commas separate repos in the same step, `·` separates steps.
+      placeholder: "rtps, interfaces-ros2 · mib, hmi"
