@@ -120,3 +120,16 @@ tracky/           the bot: Python, stdlib + the GitHub API
 site/             the GitHub Pages dashboard and declare form
 docs/design.md    the design
 ```
+
+## Developing
+
+Python 3.11+, nothing to install. From the repo root:
+
+```
+python -m unittest          # the tests; no network
+python -m tracky --help
+python -m tracky smoke rammp-rtps#21            # fetch a PR and compare with the local `gh` login
+python -m tracky smoke pace-hmi-fw#26 main HEAD  # compare two refs in that repo
+```
+
+The client takes its token from `TRACKY_TOKEN`, `GITHUB_TOKEN` or `GH_TOKEN`, else from `gh auth token`.
