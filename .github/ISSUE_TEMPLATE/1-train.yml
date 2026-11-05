@@ -33,18 +33,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        All aboard the PR train! 🚂💨 Fill this in once; Tracky keeps a table of the train current
-        in this issue's body. Everything you write here stays yours. The declare page on Tracky's
-        site fills this form for you from a list of the org's repos.
-
-        The title above is the headline, e.g. `train: E-stop button`. The branch name below is its
-        short form.
+        All aboard the PR train! 🚂💨 The title above is the headline, e.g. `train: E-stop button`.
+        Tracky keeps a table of the train current in this issue's body; everything you write stays yours.
 
   - type: input
     id: name
     attributes:
       label: Branch name
-      description: "Short, branch-safe form of the title: lowercase letters, digits and dashes. Every repo gets the branch `feat/{issue}-{branch name}`."
+      description: "Short form of the title for branches, `feat/{issue}-{branch name}`: lowercase letters, digits and dashes."
       placeholder: estop
     validations:
       required: true
@@ -53,7 +49,7 @@ body:
     id: repos
     attributes:
       label: Repos
-      description: "One line per repo this feature touches, as `repo: what it needs there`, in merge order. Use the repo's name as on GitHub. A blank line separates steps; repos in one step can merge in any order. Leave the blank lines out and Tracky suggests the steps. The note becomes the body of that repo's issue and draft PR."
+      description: "One line per repo, `repo: what it needs there`, in merge order. A blank line separates steps that can merge in parallel; leave them out and Tracky suggests the steps."
       placeholder: |
         rammp-rtps: add the e-stop message
 
@@ -66,7 +62,7 @@ body:
     id: repoint
     attributes:
       label: Repoint
-      description: After an upstream PR merges, should Tracky repoint downstream branches on its own, or wait for `/tracky repoint`?
+      description: "After an upstream PR merges: repoint downstream branches on its own, or wait for `/tracky repoint`."
       options:
         - auto
         - on request
