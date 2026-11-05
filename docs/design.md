@@ -25,9 +25,9 @@ This is what it is made of and why. The README says what it does for a user.
 ## The record: one issue per feature
 
 The feature issue in the Tracky repo is the source of truth. It is opened through an issue form
-(`.github/ISSUE_TEMPLATE/1-train.yml`) with fields: name, repos (one line per repo, `repo: what it
-needs`, in merge order), repoint (auto / on request), order (optional, overrides the
-suggestion). The form applies the label `train`; that label is what makes an issue a feature to
+(`.github/ISSUE_TEMPLATE/1-train.yml`) with fields: name (the branch slug; the title is the
+headline), repos (one line per repo, `repo: what it needs`, in merge order, a blank line
+between steps), repoint (auto / on request). The form applies the label `train`; that label is what makes an issue a feature to
 Tracky. Repos are free text, not a fixed list, so any rammp-org repo can join a train without a
 template change; the declare page offers the org's repos and fills the field.
 
@@ -68,10 +68,11 @@ Evidence, in the order checked:
    `external/rammp-rtps`.)
 2. **ROS 2 package dependency.** A `package.xml` in repo A lists a package that lives in member
    repo B. B goes before A. (The arm driver or anything ROS-facing after interfaces-ros2.)
-3. **Stated.** `Follows owner/repo#N` in a PR body, or `/tracky order …`, or the order field on
-   the feature issue. A stated order wins. If it contradicts rule 1 or 2 Tracky says so on the
+3. **Stated.** `Follows owner/repo#N` in a PR body, or `/tracky order …`, or blank lines between
+   steps in the feature issue's repos field. A stated order wins. If it contradicts rule 1 or 2 Tracky says so on the
    feature issue, once, and follows the stated order anyway.
 4. **Otherwise** the repos are the same step, listed in the order the feature issue lists them.
+   Without blank lines the repos field is a sequence only, and rules 1 and 2 cut it into steps.
 
 A step is a set of PRs that can merge in any order among themselves. The next step's repoint
 happens when every PR it depends on has merged, not when the whole previous step has.

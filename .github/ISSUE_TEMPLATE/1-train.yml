@@ -4,16 +4,20 @@
 # declare page's prefill URL (site/declare.html) both depend on them, so change them only
 # together with those two.
 #
-#   name      input     the slug, e.g. estop; used in branches feat/{issue}-{name}
-#   repos     textarea  one line per repo: "<repo>: <what it needs>", in merge order
+#   name      input     the branch slug, e.g. estop; used in branches feat/{issue}-{name}
+#   repos     textarea  one line per repo, "<repo>: <what it needs>", in merge order; a blank
+#                       line separates steps
 #   repoint   dropdown  "auto" or "on request"
-#   order     input     optional; overrides the suggested order
+#
+# The issue title is the headline ("train: E-stop button"); `name` is its short, branch-safe
+# form. They are separate fields because a title can be anything and a slug cannot.
 #
 # Decision, repos and notes as lines in one textarea rather than a checkbox and a textarea per
 # repo: any rammp-org repo can be named without editing this template, the line order is the
-# fallback merge order, and the declare page fills the whole field with one query parameter
-# (GitHub prefills input, textarea and dropdown fields by id). The cost is that the parser
-# splits lines on the first ":" and must match the repo name itself.
+# merge order (with blank lines between steps that may merge in parallel; without them Tracky
+# groups the steps from the evidence it sees), and the declare page fills the whole field with
+# one query parameter (GitHub prefills input, textarea and dropdown fields by id). The cost is
+# that the parser splits lines on the first ":" and must match the repo name itself.
 #
 # Ids avoid GitHub's own query parameters: title, body, labels, milestone, assignees,
 # projects, template.
@@ -33,11 +37,14 @@ body:
         in this issue's body. Everything you write here stays yours. The declare page on Tracky's
         site fills this form for you from a list of the org's repos.
 
+        The title above is the headline, e.g. `train: E-stop button`. The branch name below is its
+        short form.
+
   - type: input
     id: name
     attributes:
-      label: Name
-      description: Short slug for the feature. Lowercase letters, digits and dashes; it becomes the branch `feat/{issue}-{name}` in every repo.
+      label: Branch name
+      description: "Short, branch-safe form of the title: lowercase letters, digits and dashes. Every repo gets the branch `feat/{issue}-{branch name}`."
       placeholder: estop
     validations:
       required: true
@@ -46,10 +53,10 @@ body:
     id: repos
     attributes:
       label: Repos
-      description: "One line per repo this feature touches, as `repo: what it needs there`. Use the repo's name as on GitHub. The note becomes the body of that repo's issue and draft PR. Line order is the fallback merge order."
+      description: "One line per repo this feature touches, as `repo: what it needs there`, in merge order. Use the repo's name as on GitHub. A blank line separates steps; repos in one step can merge in any order. Leave the blank lines out and Tracky suggests the steps. The note becomes the body of that repo's issue and draft PR."
       placeholder: |
         rammp-rtps: add the e-stop message
-        rammp-interfaces-ros2: publish it on /estop
+
         RAMMP-mib-fw: assert the output when received
         pace-hmi-fw: button on the main screen
     validations:
@@ -66,10 +73,3 @@ body:
       default: 0
     validations:
       required: true
-
-  - type: input
-    id: order
-    attributes:
-      label: Order
-      description: Optional. Merge order, overriding Tracky's suggestion. Commas separate repos in the same step, `·` separates steps.
-      placeholder: "rtps, interfaces-ros2 · mib, hmi"
