@@ -1,7 +1,7 @@
 # Declare a feature: the umbrella issue of a PR train. See docs/design.md, "The record".
 #
-# The field ids below are an interface. Tracky's body parser (tracky/feature.py, #3) and the
-# declare page's prefill URL (site/declare.html, #17) both depend on them, so change them only
+# The field ids below are an interface. Tracky's body parser (tracky/feature.py) and the
+# declare page's prefill URL (site/declare.html) both depend on them, so change them only
 # together with those two.
 #
 #   name                        input     the slug, e.g. estop; used in branches feat/{issue}-{name}
@@ -22,8 +22,8 @@
 # Prefill: GitHub documents the field id as "the canonical identifier for the field in URL
 # query parameter prefills" (?template=train.yml&name=estop&note_rammp_rtps=...). It does not
 # say per type what is honoured; input, textarea and dropdown (by option text) are known to
-# work, checkboxes are not confirmed. #17 checks the checkboxes field and, if GitHub ignores
-# the parameter, puts the repo list in a note so the person ticks the boxes by hand.
+# work, checkboxes are not confirmed. The declare page checks the checkboxes field and, if
+# GitHub ignores the parameter, puts the repo list in a note so the person ticks the boxes by hand.
 #
 # Ids avoid GitHub's own query parameters: title, body, labels, milestone, assignees,
 # projects, template.
