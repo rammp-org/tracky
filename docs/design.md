@@ -25,9 +25,18 @@ This is what it is made of and why. The README says what it does for a user.
 ## The record: one issue per feature
 
 The feature issue in the Tracky repo is the source of truth. It is opened through an issue form
-(`.github/ISSUE_TEMPLATE/feature.yml`) with fields: name, repos (checkboxes), note per repo,
-repoint (auto / on request), order (optional, overrides the suggestion). Tracky keeps a block in
-the body current:
+(`.github/ISSUE_TEMPLATE/train.yml`) with fields: name, repos (checkboxes), note per repo,
+repoint (auto / on request), order (optional, overrides the suggestion). The form applies the
+label `train`; that label is what makes an issue a feature to Tracky.
+
+Tracky's own development happens in the same repo, so its issues share the list. A second
+template, `tracky.yml`, labels those `tracky`, and `config.yml` turns blank issues off so every
+issue arrives through one of the two. Every workflow filters on `train`: `scaffold` runs on
+`issues: [labeled]` only when the label is `train`; `track` lists issues by `label:train`;
+`commands` answers `/tracky` on anything else with "not a train" and does nothing. Removing the
+`train` label from an issue is how a declared feature is withdrawn without deleting its history.
+
+Tracky keeps a block in the feature issue's body current:
 
 ```
 <!-- tracky -->
@@ -125,9 +134,12 @@ tracky/                    Python 3.11+, stdlib + GitHub REST/GraphQL via a GitH
   track.py                 one pass: read everything, compute states, write comments and data.json
   repoint.py               the pointer commit and auto-merge
   commands.py              /tracky … on issues and PRs
-.github/ISSUE_TEMPLATE/feature.yml
+.github/ISSUE_TEMPLATE/
+  train.yml                the declare form; label train
+  tracky.yml               bug, idea or task for Tracky itself; label tracky
+  config.yml               blank_issues_enabled: false
 .github/workflows/
-  scaffold.yml             on: issues [opened, labeled feature]
+  scaffold.yml             on: issues [labeled] if label == train
   track.yml                on: schedule */15, workflow_dispatch, repository_dispatch [pr-event]
   commands.yml             on: issue_comment [created] matching ^/tracky
   pages.yml                on: push to site/ and after track; deploys site/

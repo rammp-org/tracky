@@ -1,6 +1,13 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.svg">
+    <img src="docs/logo.svg" alt="Tracky: all aboard the PR train!" width="560">
+  </picture>
+</p>
+
 # Tracky
 
-**All aboard the PR train 🚂**
+**All aboard the PR train! 🚂💨**
 
 A feature on the RAMMP chair rarely lives in one repo. A new message starts in
 [rammp-rtps](https://github.com/rammp-org/rammp-rtps), gets mirrored in
@@ -66,6 +73,21 @@ Does not:
 - edit a PR description after scaffolding it
 - replace Dependabot, CI, or branch protection; it relies on them
 
+## Two kinds of issue in this repo
+
+Tracky is developed here too, so its issue list holds both trains and its own work. A label
+tells them apart, and Tracky only ever acts on the first kind:
+
+| label      | what it is                                              | who makes it                |
+|------------|---------------------------------------------------------|-----------------------------|
+| `train`    | a feature being tracked: the umbrella issue of a train  | the declare form, always    |
+| `tracky`   | a bug, idea or task for Tracky itself                   | the "Tracky itself" template |
+
+Both come from issue templates, and blank issues are off, so every issue lands with the right
+label. Tracky's workflows filter on `train`; an issue without it is invisible to the bot, and
+`/tracky` comments on it get a polite "not a train" reply. Tracky's own development is ordinary
+GitHub: an issue with `tracky`, a branch `feat/{issue}-{name}` by the same convention, a PR.
+
 ## Conventions it follows and expects
 
 - Branches are `feat/{issue number}-{feature name}`; the issue is the one in that repo.
@@ -90,7 +112,10 @@ On a feature issue or any PR in its train:
 ```
 tracky/           the bot: Python, stdlib + the GitHub API
 .github/
-  ISSUE_TEMPLATE/feature.yml   the declare form
+  ISSUE_TEMPLATE/
+    train.yml                  the declare form; labels the issue `train`
+    tracky.yml                 bug, idea or task for Tracky itself; labels it `tracky`
+    config.yml                 blank issues off
   workflows/                   scaffold, track, repoint, pages
 site/             the GitHub Pages dashboard and declare form
 docs/design.md    the design

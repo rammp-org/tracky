@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Tracky: all aboard the PR train!">
+  <defs>
+    <style>
+      .word { font: 800 96px/1 "SF Pro Display", "Segoe UI", Inter, Helvetica, Arial, system-ui, sans-serif; fill: #1f2328; letter-spacing: -2px; }
+      .tag  { font: 600 26px/1 "SF Pro Display", "Segoe UI", Inter, Helvetica, Arial, system-ui, sans-serif; fill: #656d76; }
+      .rail { stroke: #8c959f; }
+      .tie  { fill: #8c959f; }
+      .puff { fill: #d0d7de; }
+    </style>
+  </defs>
+
+  <!-- rails -->
+  <g>
+    <rect class="tie" x="30" y="256" width="520" height="6" rx="3"/>
+    <line class="rail" x1="30" y1="270" x2="550" y2="270" stroke-width="5" stroke-linecap="round"/>
+    <g class="tie">
+      <rect x="40" y="248" width="8" height="30" rx="2"/><rect x="100" y="248" width="8" height="30" rx="2"/>
+      <rect x="160" y="248" width="8" height="30" rx="2"/><rect x="220" y="248" width="8" height="30" rx="2"/>
+      <rect x="280" y="248" width="8" height="30" rx="2"/><rect x="340" y="248" width="8" height="30" rx="2"/>
+      <rect x="400" y="248" width="8" height="30" rx="2"/><rect x="460" y="248" width="8" height="30" rx="2"/>
+      <rect x="520" y="248" width="8" height="30" rx="2"/>
+    </g>
+  </g>
+
+  <!-- smoke -->
+  <g class="puff">
+    <circle cx="470" cy="88" r="14"/>
+    <circle cx="500" cy="62" r="20"/>
+    <circle cx="540" cy="36" r="26"/>
+  </g>
+
+  <!-- locomotive, at the front (right) -->
+  <g>
+    <!-- cab -->
+    <rect x="330" y="112" width="78" height="120" rx="10" fill="#8250df"/>
+    <rect x="346" y="128" width="46" height="40" rx="6" fill="#fff" opacity="0.92"/>
+    <!-- boiler -->
+    <rect x="400" y="150" width="130" height="82" rx="16" fill="#8250df"/>
+    <rect x="420" y="150" width="90" height="12" fill="#6639ba"/>
+    <!-- chimney -->
+    <rect x="462" y="104" width="30" height="52" rx="6" fill="#6639ba"/>
+    <rect x="456" y="98" width="42" height="14" rx="5" fill="#6639ba"/>
+    <!-- headlamp -->
+    <circle cx="530" cy="190" r="14" fill="#ffd33d"/>
+    <!-- cowcatcher -->
+    <path d="M530 232 L560 266 L524 266 Z" fill="#6639ba"/>
+    <!-- wheels -->
+    <circle cx="360" cy="236" r="22" fill="#1f2328"/><circle cx="360" cy="236" r="9" fill="#8c959f"/>
+    <circle cx="430" cy="236" r="22" fill="#1f2328"/><circle cx="430" cy="236" r="9" fill="#8c959f"/>
+    <circle cx="492" cy="236" r="22" fill="#1f2328"/><circle cx="492" cy="236" r="9" fill="#8c959f"/>
+  </g>
+
+  <!-- cars: merged, merged, open -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- couplings -->
+    <rect x="312" y="196" width="18" height="8" rx="4" fill="#8c959f"/>
+    <rect x="212" y="196" width="18" height="8" rx="4" fill="#8c959f"/>
+    <rect x="112" y="196" width="18" height="8" rx="4" fill="#8c959f"/>
+
+    <!-- car 3 (just behind the engine): merged -->
+    <rect x="230" y="162" width="82" height="70" rx="10" fill="#8250df"/>
+    <g fill="none" stroke="#fff" stroke-width="5">
+      <circle cx="258" cy="182" r="6"/><circle cx="258" cy="212" r="6"/><circle cx="288" cy="197" r="6"/>
+      <path d="M258 188 V206 M258 192 C258 200 270 197 282 197"/>
+    </g>
+    <circle cx="252" cy="236" r="16" fill="#1f2328"/><circle cx="290" cy="236" r="16" fill="#1f2328"/>
+
+    <!-- car 2: merged -->
+    <rect x="130" y="162" width="82" height="70" rx="10" fill="#8250df"/>
+    <g fill="none" stroke="#fff" stroke-width="5">
+      <circle cx="158" cy="182" r="6"/><circle cx="158" cy="212" r="6"/><circle cx="188" cy="197" r="6"/>
+      <path d="M158 188 V206 M158 192 C158 200 170 197 182 197"/>
+    </g>
+    <circle cx="152" cy="236" r="16" fill="#1f2328"/><circle cx="190" cy="236" r="16" fill="#1f2328"/>
+
+    <!-- car 1 (last): open, still being pulled along -->
+    <rect x="30" y="162" width="82" height="70" rx="10" fill="#1a7f37"/>
+    <g fill="none" stroke="#fff" stroke-width="5">
+      <circle cx="58" cy="182" r="6"/><circle cx="58" cy="212" r="6"/><circle cx="88" cy="182" r="6"/>
+      <path d="M58 188 V206 M88 188 V200 l-7 -5 M88 200 l7 -5"/>
+    </g>
+    <circle cx="52" cy="236" r="16" fill="#1f2328"/><circle cx="90" cy="236" r="16" fill="#1f2328"/>
+  </g>
+
+  <!-- wordmark -->
+  <text class="word" x="600" y="176">Tracky</text>
+  <text class="tag"  x="604" y="222">All aboard the PR train!</text>
+</svg>
