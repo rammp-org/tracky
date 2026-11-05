@@ -4,32 +4,22 @@
 # declare page's prefill URL (site/declare.html) both depend on them, so change them only
 # together with those two.
 #
-#   name                        input     the slug, e.g. estop; used in branches feat/{issue}-{name}
-#   repos                       checkboxes one per member repo; the option label is the repo name
-#   note_rammp_rtps             textarea  what rammp-rtps needs
-#   note_rammp_interfaces_ros2  textarea  what rammp-interfaces-ros2 needs
-#   note_rammp_mib_fw           textarea  what RAMMP-mib-fw needs
-#   note_pace_hmi_fw            textarea  what pace-hmi-fw needs
-#   repoint                     dropdown  "auto" or "on request"
-#   order                       input     optional; overrides the suggested order
+#   name      input     the slug, e.g. estop; used in branches feat/{issue}-{name}
+#   repos     textarea  one line per repo: "<repo>: <what it needs>", in merge order
+#   repoint   dropdown  "auto" or "on request"
+#   order     input     optional; overrides the suggested order
 #
-# Decision, one note per repo: one textarea per repo rather than one textarea with a
-# "repo: note" line per row. Each note is then a single form field, so the parser reads it from
-# its own "### Note: <repo>" heading without splitting free text, and the declare page can
-# prefill each one with its own query parameter. The cost is that adding a member repo means
-# adding a checkbox option and a textarea here, which it would anyway for the checkbox.
-#
-# Prefill: GitHub documents the field id as "the canonical identifier for the field in URL
-# query parameter prefills" (?template=train.yml&name=estop&note_rammp_rtps=...). It does not
-# say per type what is honoured; input, textarea and dropdown (by option text) are known to
-# work, checkboxes are not confirmed. The declare page checks the checkboxes field and, if
-# GitHub ignores the parameter, puts the repo list in a note so the person ticks the boxes by hand.
+# Decision, repos and notes as lines in one textarea rather than a checkbox and a textarea per
+# repo: any rammp-org repo can be named without editing this template, the line order is the
+# fallback merge order, and the declare page fills the whole field with one query parameter
+# (GitHub prefills input, textarea and dropdown fields by id). The cost is that the parser
+# splits lines on the first ":" and must match the repo name itself.
 #
 # Ids avoid GitHub's own query parameters: title, body, labels, milestone, assignees,
 # projects, template.
 #
-# Rendered body (what the parser sees): "### <label>" then the value; "- [x] rammp-rtps" for
-# ticked repos, "_No response_" for an empty optional field.
+# Rendered body (what the parser sees): "### <label>" then the value, "_No response_" for an
+# empty optional field.
 
 name: Declare a feature (train)
 description: Start a PR train across the member repos. Tracky scaffolds issues, branches and draft PRs from this.
@@ -40,7 +30,8 @@ body:
     attributes:
       value: |
         All aboard the PR train! 🚂💨 Fill this in once; Tracky keeps a table of the train current
-        in this issue's body. Everything you write here stays yours.
+        in this issue's body. Everything you write here stays yours. The declare page on Tracky's
+        site fills this form for you from a list of the org's repos.
 
   - type: input
     id: name
@@ -51,40 +42,18 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
+  - type: textarea
     id: repos
     attributes:
       label: Repos
-      description: Tick every member repo this feature touches. The ticked order is the fallback merge order.
-      options:
-        - label: rammp-rtps
-        - label: rammp-interfaces-ros2
-        - label: RAMMP-mib-fw
-        - label: pace-hmi-fw
-
-  - type: textarea
-    id: note_rammp_rtps
-    attributes:
-      label: "Note: rammp-rtps"
-      description: What rammp-rtps needs for this feature. Becomes the body of its issue and draft PR. Leave empty if unticked.
-
-  - type: textarea
-    id: note_rammp_interfaces_ros2
-    attributes:
-      label: "Note: rammp-interfaces-ros2"
-      description: What rammp-interfaces-ros2 needs for this feature. Leave empty if unticked.
-
-  - type: textarea
-    id: note_rammp_mib_fw
-    attributes:
-      label: "Note: RAMMP-mib-fw"
-      description: What RAMMP-mib-fw needs for this feature. Leave empty if unticked.
-
-  - type: textarea
-    id: note_pace_hmi_fw
-    attributes:
-      label: "Note: pace-hmi-fw"
-      description: What pace-hmi-fw needs for this feature. Leave empty if unticked.
+      description: "One line per repo this feature touches, as `repo: what it needs there`. Use the repo's name as on GitHub. The note becomes the body of that repo's issue and draft PR. Line order is the fallback merge order."
+      placeholder: |
+        rammp-rtps: add the e-stop message
+        rammp-interfaces-ros2: publish it on /estop
+        RAMMP-mib-fw: assert the output when received
+        pace-hmi-fw: button on the main screen
+    validations:
+      required: true
 
   - type: dropdown
     id: repoint

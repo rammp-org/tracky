@@ -1,0 +1,22 @@
+# Features for Tracky itself, not features to track. Labels the issue `tracky`; Tracky's
+# workflows act only on `train`. See docs/design.md, "The record".
+
+name: Tracky feature
+description: Something Tracky should do that it does not do yet.
+labels: ["tracky", "enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What Tracky should do
+      description: Describe it from the person's side, what they do and what they see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What is cumbersome or impossible today.
+    validations:
+      required: true

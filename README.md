@@ -114,7 +114,7 @@ tracky/           the bot: Python, stdlib + the GitHub API
 .github/
   ISSUE_TEMPLATE/
     train.yml                  the declare form; labels the issue `train`
-    tracky.yml                 bug, idea or task for Tracky itself; labels it `tracky`
+    bug.yml, feature.yml, task.yml   for Tracky itself; label it `tracky`
     config.yml                 blank issues off
   workflows/                   scaffold, track, repoint, pages
 site/             the GitHub Pages dashboard and declare form

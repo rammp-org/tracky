@@ -1,0 +1,19 @@
+# Chores for Tracky: docs, refactors, setup steps. Labels the issue `tracky`; Tracky's
+# workflows act only on `train`. See docs/design.md, "The record".
+
+name: Tracky task
+description: A chore for Tracky, such as docs, a refactor or a setup step.
+labels: ["tracky"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What to do
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: How to tell it is finished.
