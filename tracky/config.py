@@ -1,7 +1,7 @@
 """Static facts about the org and its repos.
 
-Any repo in the org can be on a train; nothing in Tracky is limited to a
-fixed list. ``COMMON_REPOS`` is the handful most trains touch: the declare
+Any public repo in the org can be on a train; nothing in Tracky is limited
+to a fixed list. ``COMMON_REPOS`` is the handful most trains touch: the declare
 page shows them first, and they are the test fixtures. The live list comes
 from ``GitHub.org_repos``.
 

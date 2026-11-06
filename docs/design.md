@@ -58,15 +58,15 @@ workflow that tracks.
 
 ## Member repos: any in the org
 
-A repo is on a train because the feature issue names it; there is no membership list. Any repo
-in rammp-org qualifies, private ones included, as long as the bot's token can see it. The four
+A repo is on a train because the feature issue names it; there is no membership list. Any public
+repo in rammp-org qualifies; private repos are out of scope, since everything a train touches is
+public and the dashboard publishes branch and PR names. The four
 that most trains touch (rammp-rtps, rammp-interfaces-ros2, RAMMP-mib-fw, pace-hmi-fw) are
 `COMMON_REPOS` in `tracky/config.py`: the declare page shows them first, the tests use them as
 fixtures, and nothing else is limited to them. Repo names are resolved against the org's live
 repo list (`GitHub.org_repos`), case-insensitively, so a person can type `rammp-mib-fw` and get
 `RAMMP-mib-fw`; a name the org does not have is reported on the feature issue. The declare page
-reads the org's repo list without a token, so it can list only the public repos; a private repo
-is typed into the issue form by hand.
+reads the same list from the public API without a token.
 
 ## Order: suggested, then chosen
 

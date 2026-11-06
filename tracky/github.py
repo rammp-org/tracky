@@ -212,13 +212,13 @@ class GitHub:
     # ------------------------------------------------------------------ helpers
 
     def org_repos(self, org: str = config.ORG, *, archived: bool = False) -> list[dict]:
-        """Every repo in the org the token can see, as the API gives them. Cached per run.
+        """Every public repo in the org, as the API gives them. Cached per run.
 
-        Private repos appear only with a token that has access to them. Archived
-        repos are left out unless ``archived`` is set.
+        Trains run on public repos only, so private ones are not listed even when
+        the token could see them. Archived repos are left out unless ``archived`` is set.
         """
         if org not in self._org_repos:
-            self._org_repos[org] = list(self.paginate(f"orgs/{org}/repos", params={"type": "all"}))
+            self._org_repos[org] = list(self.paginate(f"orgs/{org}/repos", params={"type": "public"}))
         return [r for r in self._org_repos[org] if archived or not r.get("archived")]
 
     def resolve(self, name: str, org: str = config.ORG) -> str:
@@ -238,7 +238,7 @@ class GitHub:
         return self._default_branch[repo]
 
     def is_org_repo(self, repo: str, org: str = config.ORG) -> bool:
-        """Whether ``repo`` (full name, any case) is a repo of the org the token can see."""
+        """Whether ``repo`` (full name, any case) is a public repo of the org."""
         return config.short(repo).lower() in {r["name"].lower() for r in self.org_repos(org, archived=True)}
 
     def compare(self, repo: str, base: str, head: str) -> str:

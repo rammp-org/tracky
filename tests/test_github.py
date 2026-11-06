@@ -143,10 +143,10 @@ class HelpersTest(unittest.TestCase):
 
     def test_org_repos_and_resolve(self):
         send = FakeSend()
-        send.route("GET", "/orgs/rammp-org/repos?per_page=100&type=all", [
-            {"name": "rammp-rtps", "full_name": "rammp-org/rammp-rtps", "archived": False, "private": False},
-            {"name": "Sheppy", "full_name": "rammp-org/Sheppy", "archived": False, "private": True},
-            {"name": "old-fw", "full_name": "rammp-org/old-fw", "archived": True, "private": False},
+        send.route("GET", "/orgs/rammp-org/repos?per_page=100&type=public", [
+            {"name": "rammp-rtps", "full_name": "rammp-org/rammp-rtps", "archived": False},
+            {"name": "Sheppy", "full_name": "rammp-org/Sheppy", "archived": False},
+            {"name": "old-fw", "full_name": "rammp-org/old-fw", "archived": True},
         ])
         gh = client(send)
         self.assertEqual([r["name"] for r in gh.org_repos()], ["rammp-rtps", "Sheppy"])
