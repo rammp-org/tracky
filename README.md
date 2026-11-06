@@ -42,7 +42,9 @@ Tracky only removes the "come back later and press merge" part.
 
 Go to the Tracky page (GitHub Pages, link to come), fill in the form: name, the repos it
 touches, a line per repo on what's needed there, and whether downstream PRs repoint
-automatically. Submit opens a prefilled issue in this repo; confirm it and Tracky takes over:
+automatically. Any repo in rammp-org can be on a train; the form offers the usual four first and
+the rest of the org below. Submit opens a prefilled issue in this repo; confirm it and Tracky
+takes over:
 
 1. An issue in each member repo describing what that repo needs.
 2. A branch `feat/{issue}-{name}` in each repo, off its default branch (`main` for the firmware
@@ -130,6 +132,7 @@ python -m unittest          # the tests; no network
 python -m tracky --help
 python -m tracky smoke rammp-rtps#21            # fetch a PR and compare with the local `gh` login
 python -m tracky smoke pace-hmi-fw#26 main HEAD  # compare two refs in that repo
+python -m tracky repos                           # the org's repos, the common ones first
 ```
 
 The client takes its token from `TRACKY_TOKEN`, `GITHUB_TOKEN` or `GH_TOKEN`, else from `gh auth token`.

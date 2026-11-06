@@ -202,10 +202,10 @@ class Feature:
 
     number: int  #: the feature issue in the Tracky repo
     name: str  #: slug, as in ``feat/{issue}-{name}``
-    repos: list[str] = field(default_factory=list)  #: full names, in ticked order
+    repos: list[str] = field(default_factory=list)  #: full names, in the order the issue lists them
     notes: dict[str, str] = field(default_factory=dict)  #: full name -> what is needed there
     repoint: Repoint = Repoint.AUTO
-    order: list[list[str]] | None = None  #: stated order as steps of full names; None = suggested
+    order: list[list[str]] | None = None  #: steps stated by blank lines in the repos field; None = suggested
     cars: list[Car] = field(default_factory=list)
     title: str = ""
     open: bool = True

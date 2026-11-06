@@ -16,6 +16,9 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(config.canon(" RAMMP-org/rammp-MIB-fw "), "rammp-org/RAMMP-mib-fw")
         self.assertEqual(config.canon("new-repo"), "rammp-org/new-repo")
         self.assertEqual(config.canon("other/thing"), "other/thing")
+        live = {**config.KNOWN, "sheppy": "rammp-org/Sheppy"}
+        self.assertEqual(config.canon("SHEPPY", live), "rammp-org/Sheppy")
+        self.assertEqual(config.canon("rammp-org/sheppy", live), "rammp-org/Sheppy")
 
     def test_submodule_map(self):
         for repo in ("RAMMP-mib-fw", "pace-hmi-fw"):
@@ -23,7 +26,7 @@ class ConfigTest(unittest.TestCase):
             self.assertEqual(sub.path, "external/rammp-rtps")
             self.assertEqual(sub.of, "rammp-org/rammp-rtps")
         self.assertNotIn(config.full("rammp-rtps"), config.SUBMODULES)
-        self.assertEqual(len(config.REPOS), 4)
+        self.assertEqual(len(config.COMMON_REPOS), 4)
 
 
 class BranchTest(unittest.TestCase):

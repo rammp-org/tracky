@@ -56,6 +56,18 @@ A file would be the choice if the record needed review before it took effect; it
 The dashboard is built from these issues plus live PR state, into `site/data.json`, by the same
 workflow that tracks.
 
+## Member repos: any in the org
+
+A repo is on a train because the feature issue names it; there is no membership list. Any repo
+in rammp-org qualifies, private ones included, as long as the bot's token can see it. The four
+that most trains touch (rammp-rtps, rammp-interfaces-ros2, RAMMP-mib-fw, pace-hmi-fw) are
+`COMMON_REPOS` in `tracky/config.py`: the declare page shows them first, the tests use them as
+fixtures, and nothing else is limited to them. Repo names are resolved against the org's live
+repo list (`GitHub.org_repos`), case-insensitively, so a person can type `rammp-mib-fw` and get
+`RAMMP-mib-fw`; a name the org does not have is reported on the feature issue. The declare page
+reads the org's repo list without a token, so it can list only the public repos; a private repo
+is typed into the issue form by hand.
+
 ## Order: suggested, then chosen
 
 A fixed tier (rtps, ros2, mib, hmi) is right today and wrong tomorrow. Tracky suggests an order
@@ -154,7 +166,7 @@ site/
   data.json                written by track
 ```
 
-Member repos each get `.github/workflows/tracky.yml`, about ten lines: on
+A repo that takes part in trains gets `.github/workflows/tracky.yml`, about ten lines: on
 `pull_request [opened, edited, closed, ready_for_review, synchronize]` send a
 `repository_dispatch` to the Tracky repo so a merge is seen within a minute rather than at the
 next quarter hour. Optional; the schedule covers it without.
@@ -170,7 +182,8 @@ secret in a public page.
 
 ## Auth
 
-A GitHub App owned by rammp-org, installed on the member repos, with: contents write (branches,
+A GitHub App owned by rammp-org, installed on all repositories in the org so a repo can join a
+train without an install step, with: contents write (branches,
 pointer commits), issues write, pull requests write, metadata read, checks read. Workflows mint a
 short-lived token from the App's private key (`actions/create-github-app-token`). Comments and
 commits then appear as `tracky[bot]`, not as a person's PAT. Creating the App is the one step

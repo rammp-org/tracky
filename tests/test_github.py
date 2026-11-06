@@ -141,6 +141,24 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(gh.default_branch("rammp-org/rammp-interfaces-ros2"), "dev")
         self.assertEqual(len(send.calls), 1)
 
+    def test_org_repos_and_resolve(self):
+        send = FakeSend()
+        send.route("GET", "/orgs/rammp-org/repos?per_page=100&type=all", [
+            {"name": "rammp-rtps", "full_name": "rammp-org/rammp-rtps", "archived": False, "private": False},
+            {"name": "Sheppy", "full_name": "rammp-org/Sheppy", "archived": False, "private": True},
+            {"name": "old-fw", "full_name": "rammp-org/old-fw", "archived": True, "private": False},
+        ])
+        gh = client(send)
+        self.assertEqual([r["name"] for r in gh.org_repos()], ["rammp-rtps", "Sheppy"])
+        self.assertEqual([r["name"] for r in gh.org_repos(archived=True)], ["rammp-rtps", "Sheppy", "old-fw"])
+        self.assertEqual(gh.resolve("sheppy"), "rammp-org/Sheppy")
+        self.assertEqual(gh.resolve("RAMMP-ORG/old-fw"), "rammp-org/old-fw")
+        self.assertEqual(gh.resolve("rammp-mib-fw"), "rammp-org/RAMMP-mib-fw")  # common, not in the fake list
+        self.assertEqual(gh.resolve("nope"), "rammp-org/nope")
+        self.assertTrue(gh.is_org_repo("rammp-org/SHEPPY"))
+        self.assertFalse(gh.is_org_repo("rammp-org/nope"))
+        self.assertEqual(len(send.calls), 1)  # one listing serves every call
+
     def test_submodule_sha(self):
         send = FakeSend()
         send.route("GET", "/repos/rammp-org/pace-hmi-fw/contents/external/rammp-rtps?ref=0349c1f",

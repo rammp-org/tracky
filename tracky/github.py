@@ -118,6 +118,7 @@ class GitHub:
         self.log = log or (lambda s: print(s, file=sys.stderr))
         self._compare: dict[str, str] = {}
         self._default_branch: dict[str, str] = {}
+        self._org_repos: dict[str, list[dict]] = {}
         self.calls = 0
 
     # ----------------------------------------------------------------- transport
@@ -210,11 +211,35 @@ class GitHub:
 
     # ------------------------------------------------------------------ helpers
 
+    def org_repos(self, org: str = config.ORG, *, archived: bool = False) -> list[dict]:
+        """Every repo in the org the token can see, as the API gives them. Cached per run.
+
+        Private repos appear only with a token that has access to them. Archived
+        repos are left out unless ``archived`` is set.
+        """
+        if org not in self._org_repos:
+            self._org_repos[org] = list(self.paginate(f"orgs/{org}/repos", params={"type": "all"}))
+        return [r for r in self._org_repos[org] if archived or not r.get("archived")]
+
+    def resolve(self, name: str, org: str = config.ORG) -> str:
+        """A repo name as a person typed it -> its full name, in the org's own casing.
+
+        Any repo in the org resolves, not only the common ones. A name the org does
+        not have comes back as ``config.canon`` gives it, so the caller can report it.
+        """
+        known = dict(config.KNOWN)
+        known.update({r["name"].lower(): r["full_name"] for r in self.org_repos(org, archived=True)})
+        return config.canon(name, known)
+
     def default_branch(self, repo: str) -> str:
         repo = config.full(repo)
         if repo not in self._default_branch:
             self._default_branch[repo] = self.get(f"repos/{repo}")["default_branch"]
         return self._default_branch[repo]
+
+    def is_org_repo(self, repo: str, org: str = config.ORG) -> bool:
+        """Whether ``repo`` (full name, any case) is a repo of the org the token can see."""
+        return config.short(repo).lower() in {r["name"].lower() for r in self.org_repos(org, archived=True)}
 
     def compare(self, repo: str, base: str, head: str) -> str:
         """``identical`` | ``behind`` | ``ahead`` | ``diverged``, or ``unknown`` when a ref is missing. Cached per run."""

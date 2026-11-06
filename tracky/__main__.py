@@ -41,6 +41,19 @@ def cmd_smoke(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_repos(a: argparse.Namespace) -> int:
+    gh = GitHub()
+    repos = gh.org_repos(a.org, archived=a.archived)
+    common = {config.full(r): i for i, r in enumerate(config.COMMON_REPOS)}
+    repos.sort(key=lambda r: (common.get(r["full_name"], len(common)), r["name"].lower()))
+    for r in repos:
+        flags = " ".join(f for f, on in (("common", r["full_name"] in common), ("private", r.get("private")),
+                                         ("archived", r.get("archived"))) if on)
+        print(f"{r['name']:<36} {r['default_branch']:<6} {flags}".rstrip())
+    print(f"{len(repos)} repos in {a.org}", file=sys.stderr)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="tracky", description="All aboard the PR train! 🚂💨")
     ap.add_argument("--version", action="version", version=f"tracky {__version__}")
@@ -50,6 +63,10 @@ def main(argv: list[str] | None = None) -> int:
     sp.add_argument("base", nargs="?", help="compare base (default: the PR's base branch)")
     sp.add_argument("head", nargs="?", help="compare head (default: the PR's head sha)")
     sp.set_defaults(func=cmd_smoke)
+    rp = sub.add_parser("repos", help="list the org's repos, the common ones first")
+    rp.add_argument("--org", default=config.ORG)
+    rp.add_argument("--archived", action="store_true", help="include archived repos")
+    rp.set_defaults(func=cmd_repos)
     a = ap.parse_args(argv)
     if not a.command:
         ap.print_help()

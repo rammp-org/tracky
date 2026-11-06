@@ -1,4 +1,9 @@
-"""Static facts about the org and its member repos.
+"""Static facts about the org and its repos.
+
+Any repo in the org can be on a train; nothing in Tracky is limited to a
+fixed list. ``COMMON_REPOS`` is the handful most trains touch: the declare
+page shows them first, and they are the test fixtures. The live list comes
+from ``GitHub.org_repos``.
 
 The order module reads ``.gitmodules`` live; the submodule map here is the
 fallback and the test fixture. Repos are referred to by full name
@@ -13,8 +18,8 @@ from dataclasses import dataclass
 ORG = "rammp-org"
 TRACKY_REPO = f"{ORG}/tracky"
 
-#: Member repos, in the order the declare form lists them.
-REPOS: tuple[str, ...] = (
+#: The repos most trains touch, suggested first on the declare page. Not a limit.
+COMMON_REPOS: tuple[str, ...] = (
     "rammp-rtps",
     "rammp-interfaces-ros2",
     "RAMMP-mib-fw",
@@ -49,23 +54,26 @@ def short(repo: str) -> str:
     return repo.rsplit("/", 1)[-1]
 
 
-#: Vendoring repo (full name) -> the submodule it carries.
+#: Vendoring repo (full name) -> the submodule it carries, as known today (the fixture).
 SUBMODULES: dict[str, Submodule] = {
     full("RAMMP-mib-fw"): Submodule("external/rammp-rtps", full("rammp-rtps")),
     full("pace-hmi-fw"): Submodule("external/rammp-rtps", full("rammp-rtps")),
 }
 
-#: A repo name as it may be typed by a person -> its full name. Case-insensitive.
-KNOWN: dict[str, str] = {name.lower(): full(name) for name in REPOS}
+#: Lower-cased common repo name -> its full name, for offline canonicalisation.
+KNOWN: dict[str, str] = {name.lower(): full(name) for name in COMMON_REPOS}
 
 
-def canon(name: str) -> str:
+def canon(name: str, known: dict[str, str] | None = None) -> str:
     """Resolve a repo name a person typed (any case, with or without org) to its full name.
 
-    Unknown names are returned as ``ORG/name`` so a new member repo still works.
+    ``known`` maps lower-cased names to full names; the default covers only the
+    common repos, so an unknown name comes back as ``ORG/name`` in the case typed.
+    ``GitHub.resolve`` does the same against the org's live repo list.
     """
+    known = KNOWN if known is None else known
     name = name.strip()
     if "/" in name:
         owner, rest = name.split("/", 1)
-        return KNOWN.get(rest.lower(), f"{owner}/{rest}")
-    return KNOWN.get(name.lower(), full(name))
+        return known.get(rest.lower(), f"{owner}/{rest}")
+    return known.get(name.lower(), full(name))
