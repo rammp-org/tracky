@@ -1,0 +1,6 @@
+[project]
+name = "tracky"
+version = "0.1.0"
+description = "All aboard the PR train: one feature's PRs across the RAMMP repos, run as one train."
+requires-python = ">=3.11"
+dependencies = []

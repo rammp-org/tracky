@@ -20,7 +20,7 @@ This is what it is made of and why. The README says what it does for a user.
    step's branches to the upstream merge commits, CI runs, and Tracky enables auto-merge. The
    next step is approved and merges on its own, and so on to the last car.
 6. **Done.** All PRs merged; the per-repo issues closed by `Closes`; the feature issue closed
-   by Tracky with the final table.
+   by Tracky with a last comment: "Choo choo! 🚂💨 All cars merged." and the final table.
 
 ## The record: one issue per feature
 
@@ -55,6 +55,18 @@ A file would be the choice if the record needed review before it took effect; it
 
 The dashboard is built from these issues plus live PR state, into `site/data.json`, by the same
 workflow that tracks.
+
+## Member repos: any in the org
+
+A repo is on a train because the feature issue names it; there is no membership list. Any public
+repo in rammp-org qualifies; private repos are out of scope, since everything a train touches is
+public and the dashboard publishes branch and PR names. The four
+that most trains touch (rammp-rtps, rammp-interfaces-ros2, RAMMP-mib-fw, pace-hmi-fw) are
+`COMMON_REPOS` in `tracky/config.py`: the declare page shows them first, the tests use them as
+fixtures, and nothing else is limited to them. Repo names are resolved against the org's live
+repo list (`GitHub.org_repos`), case-insensitively, so a person can type `rammp-mib-fw` and get
+`RAMMP-mib-fw`; a name the org does not have is reported on the feature issue. The declare page
+reads the same list from the public API without a token.
 
 ## Order: suggested, then chosen
 
@@ -108,9 +120,9 @@ the pointer by hand since, Tracky still sets it to M (M is on the default branch
 one was a branch head). Then it enables auto-merge on D (`gh pr merge --auto`), which fires
 when branch protection is satisfied: required review and CI.
 
-The repoint switch on the feature issue decides *when*: `auto` is on merge, within a minute of
-the event; `on request` waits for `/tracky repoint` and meanwhile comments on D that it is
-needed. The switch exists because an automatic repoint starts a CI run and a review request on
+The repoint switch on the feature issue decides *when*: `auto` is at the first pass after the
+merge, within fifteen minutes, or at once after `/tracky status`; `on request` waits for
+`/tracky repoint` and meanwhile comments on D that it is needed. The switch exists because an automatic repoint starts a CI run and a review request on
 a branch that may still be mid-development.
 
 Tracky does not merge, approve, request changes, or dismiss reviews. Branch protection on every
@@ -145,8 +157,8 @@ tracky/                    Python 3.11+, stdlib + GitHub REST/GraphQL via a GitH
   config.yml               blank_issues_enabled: false
 .github/workflows/
   scaffold.yml             on: issues [labeled] if label == train
-  track.yml                on: schedule */15, workflow_dispatch, repository_dispatch [pr-event]
-  commands.yml             on: issue_comment [created] matching ^/tracky
+  track.yml                on: schedule */15, workflow_dispatch
+  commands.yml             on: issue_comment [created] matching ^/tracky, on this repo's issues
   pages.yml                on: push to site/ and after track; deploys site/
 site/
   index.html               dashboard: features, trains, states, links; reads data.json
@@ -154,10 +166,13 @@ site/
   data.json                written by track
 ```
 
-Member repos each get `.github/workflows/tracky.yml`, about ten lines: on
-`pull_request [opened, edited, closed, ready_for_review, synchronize]` send a
-`repository_dispatch` to the Tracky repo so a merge is seen within a minute rather than at the
-next quarter hour. Optional; the schedule covers it without.
+Tracky polls. A workflow here can only be started by events in this repo, and the only way to
+hear about a merge elsewhere within a minute is a workflow in every member repo that sends a
+`repository_dispatch` back (or a server for App webhooks). Decided 2026-11-07: Tracky asks
+nothing of the member repos, so it reads them every fifteen minutes, and a person who wants the
+state now comments `/tracky status` on the feature issue or presses "Run workflow" on `track`.
+`/tracky` comments are heard on this repo's issues only; a comment on a member-repo PR does not
+reach Tracky.
 
 ## The page
 
@@ -170,7 +185,8 @@ secret in a public page.
 
 ## Auth
 
-A GitHub App owned by rammp-org, installed on the member repos, with: contents write (branches,
+A GitHub App owned by rammp-org, installed on all repositories in the org so a repo can join a
+train without an install step, with: contents write (branches,
 pointer commits), issues write, pull requests write, metadata read, checks read. Workflows mint a
 short-lived token from the App's private key (`actions/create-github-app-token`). Comments and
 commits then appear as `tracky[bot]`, not as a person's PAT. Creating the App is the one step
@@ -198,10 +214,9 @@ trying it out, stored as a repo secret.
 ## Order of work
 
 1. **Record and track, read-only.** Issue form, `track` producing the feature issue's table and
-   `data.json`, the dashboard page. No writes to member repos. The existing prototype at
+   `data.json` every fifteen minutes and on `/tracky status`, the dashboard page. No writes to member repos. The existing prototype at
    `~/HERL/pr-train/pr_train.py` has the API plumbing, the compare checks and the sticky comment;
    its linking moves from description lines to the feature issue.
 2. **Scaffold.** Issues, branches, pointers, draft PRs. The first feature tried end to end.
 3. **Repoint and auto-merge**, with the switch. Branch protection on the member repos.
-4. **Declare form** on the page, `/tracky` commands, the GitHub App, the dispatch workflow in
-   the member repos.
+4. **Declare form** on the page, the rest of the `/tracky` commands, the GitHub App.
