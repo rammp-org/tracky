@@ -120,9 +120,9 @@ the pointer by hand since, Tracky still sets it to M (M is on the default branch
 one was a branch head). Then it enables auto-merge on D (`gh pr merge --auto`), which fires
 when branch protection is satisfied: required review and CI.
 
-The repoint switch on the feature issue decides *when*: `auto` is on merge, within a minute of
-the event; `on request` waits for `/tracky repoint` and meanwhile comments on D that it is
-needed. The switch exists because an automatic repoint starts a CI run and a review request on
+The repoint switch on the feature issue decides *when*: `auto` is at the first pass after the
+merge, within fifteen minutes, or at once after `/tracky status`; `on request` waits for
+`/tracky repoint` and meanwhile comments on D that it is needed. The switch exists because an automatic repoint starts a CI run and a review request on
 a branch that may still be mid-development.
 
 Tracky does not merge, approve, request changes, or dismiss reviews. Branch protection on every
@@ -157,8 +157,8 @@ tracky/                    Python 3.11+, stdlib + GitHub REST/GraphQL via a GitH
   config.yml               blank_issues_enabled: false
 .github/workflows/
   scaffold.yml             on: issues [labeled] if label == train
-  track.yml                on: schedule */15, workflow_dispatch, repository_dispatch [pr-event]
-  commands.yml             on: issue_comment [created] matching ^/tracky
+  track.yml                on: schedule */15, workflow_dispatch
+  commands.yml             on: issue_comment [created] matching ^/tracky, on this repo's issues
   pages.yml                on: push to site/ and after track; deploys site/
 site/
   index.html               dashboard: features, trains, states, links; reads data.json
@@ -166,10 +166,13 @@ site/
   data.json                written by track
 ```
 
-A repo that takes part in trains gets `.github/workflows/tracky.yml`, about ten lines: on
-`pull_request [opened, edited, closed, ready_for_review, synchronize]` send a
-`repository_dispatch` to the Tracky repo so a merge is seen within a minute rather than at the
-next quarter hour. Optional; the schedule covers it without.
+Tracky polls. A workflow here can only be started by events in this repo, and the only way to
+hear about a merge elsewhere within a minute is a workflow in every member repo that sends a
+`repository_dispatch` back (or a server for App webhooks). Decided 2026-11-07: Tracky asks
+nothing of the member repos, so it reads them every fifteen minutes, and a person who wants the
+state now comments `/tracky status` on the feature issue or presses "Run workflow" on `track`.
+`/tracky` comments are heard on this repo's issues only; a comment on a member-repo PR does not
+reach Tracky.
 
 ## The page
 
@@ -211,10 +214,9 @@ trying it out, stored as a repo secret.
 ## Order of work
 
 1. **Record and track, read-only.** Issue form, `track` producing the feature issue's table and
-   `data.json`, the dashboard page. No writes to member repos. The existing prototype at
+   `data.json` every fifteen minutes and on `/tracky status`, the dashboard page. No writes to member repos. The existing prototype at
    `~/HERL/pr-train/pr_train.py` has the API plumbing, the compare checks and the sticky comment;
    its linking moves from description lines to the feature issue.
 2. **Scaffold.** Issues, branches, pointers, draft PRs. The first feature tried end to end.
 3. **Repoint and auto-merge**, with the switch. Branch protection on the member repos.
-4. **Declare form** on the page, `/tracky` commands, the GitHub App, the dispatch workflow in
-   the member repos.
+4. **Declare form** on the page, the rest of the `/tracky` commands, the GitHub App.

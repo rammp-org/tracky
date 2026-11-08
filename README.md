@@ -100,14 +100,14 @@ GitHub: an issue with `tracky`, a branch `feat/{issue}-{name}` by the same conve
 
 ## Talking to Tracky
 
-On a feature issue or any PR in its train:
+Comment on the feature issue (Tracky hears comments in its own repo only, not on the PRs):
 
 | comment                                     | effect                                         |
 |---------------------------------------------|------------------------------------------------|
 | `/tracky repoint`                           | move downstream pointers to the merged upstream |
 | `/tracky order rtps, ros2, mib, hmi`        | set the merge order                            |
 | `/tracky add RAMMP-mib-fw`                  | add a repo to the feature (issue, branch, PR)  |
-| `/tracky status`                            | refresh the status comment now                 |
+| `/tracky status`                            | refresh the table and dashboard now, instead of at the next quarter hour |
 
 ## Repo layout (planned)
 
