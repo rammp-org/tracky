@@ -20,7 +20,7 @@ This is what it is made of and why. The README says what it does for a user.
    step's branches to the upstream merge commits, CI runs, and Tracky enables auto-merge. The
    next step is approved and merges on its own, and so on to the last car.
 6. **Done.** All PRs merged; the per-repo issues closed by `Closes`; the feature issue closed
-   by Tracky with the final table.
+   by Tracky with a last comment: "Choo choo! 🚂💨 All cars merged." and the final table.
 
 ## The record: one issue per feature
 

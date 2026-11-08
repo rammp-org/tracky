@@ -54,7 +54,11 @@ def cmd_repos(a: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="tracky", description="All aboard the PR train! 🚂💨")
+    ap = argparse.ArgumentParser(
+        prog="tracky",
+        description="All aboard the PR train! 🚂💨\nChoo choo: one feature's PRs across the RAMMP repos, run as one train.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     ap.add_argument("--version", action="version", version=f"tracky {__version__}")
     sub = ap.add_subparsers(dest="command", metavar="command")
     sp = sub.add_parser("smoke", help="fetch a PR and compare two refs, to check the API client and login")
